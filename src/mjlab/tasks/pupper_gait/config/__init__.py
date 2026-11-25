@@ -12,6 +12,7 @@ from mjlab.tasks.pupper_gait.pupper_gait_env_cfg import (
   pupper_velocity_fs_env_cfg,
 )
 from mjlab.tasks.pupper_gait.rl_cfg import pupper_gait_ppo_runner_cfg
+from mjlab.tasks.pupper_gait.so101_env_cfg import pupper_so101_velocity_fs_env_cfg
 from mjlab.tasks.registry import register_mjlab_task
 
 # Every task here ships with every reward weight at zero -- the terms and what
@@ -30,6 +31,19 @@ register_mjlab_task(
   env_cfg=pupper_velocity_fs_env_cfg(),
   play_env_cfg=pupper_velocity_fs_env_cfg(play=True),
   rl_cfg=_velocity_fs_rl,
+  runner_cls=PupperOnPolicyRunner,
+)
+
+# VelocityFS on Pupper carrying an SO-101 arm (resting unpowered on a back
+# mount) and its power bank under the belly. Same policy interface; payload
+# ground contact ends the episode, and the bank mass is randomized.
+_so101_rl = pupper_gait_ppo_runner_cfg()
+_so101_rl.experiment_name = "pupper_so101_velocity_fs"
+register_mjlab_task(
+  task_id="Mjlab-VelocityFS-Flat-Pupper-SO101-v3",
+  env_cfg=pupper_so101_velocity_fs_env_cfg(),
+  play_env_cfg=pupper_so101_velocity_fs_env_cfg(play=True),
+  rl_cfg=_so101_rl,
   runner_cls=PupperOnPolicyRunner,
 )
 
