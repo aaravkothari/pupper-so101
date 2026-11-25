@@ -112,6 +112,10 @@ Two things make these policies survive the real robot:
   `managers/`, `terrains/`, `viewer/`, `sim/`.
 - `src/mjlab/asset_zoo/robots/pupper_v3/` — the Pupper model and constants
   (joint order, observation dims).
+- `src/mjlab/asset_zoo/robots/pupper_v3_so101/` — Pupper carrying the SO-101
+  arm (mounts, power-bank sled, wrist camera), plus a scripted ball-pick sim:
+  `pick_demo` (watch it in the viewer) and `pick_sweep` (map where the arm can
+  pick, sitting with the leg motors off or crouched).
 - `src/mjlab/tasks/pupper/` — velocity tasks, the base exporter
   (contract v2 JSON), and the RL runner (auto-upload on run end).
 - `src/mjlab/tasks/pupper_gait/` — the gait tasks, reference-table generation,
