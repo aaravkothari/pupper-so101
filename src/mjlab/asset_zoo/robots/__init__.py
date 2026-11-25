@@ -10,6 +10,9 @@ from mjlab.asset_zoo.robots.pupper_v3.pupper_constants import (
 from mjlab.asset_zoo.robots.pupper_v3.pupper_constants import (
   get_pupper_robot_cfg as get_pupper_robot_cfg,
 )
+from mjlab.asset_zoo.robots.pupper_v3_so101.pupper_so101_constants import (
+  get_pupper_so101_robot_cfg as get_pupper_so101_robot_cfg,
+)
 from mjlab.asset_zoo.robots.unitree_g1.g1_constants import (
   G1_ACTION_SCALE as G1_ACTION_SCALE,
 )

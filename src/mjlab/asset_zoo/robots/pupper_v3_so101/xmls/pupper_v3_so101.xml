@@ -1,0 +1,323 @@
+<!--
+  Pupper v3 with an SO-101 arm on its back (Hiwonder kit = stock SO-101 geometry).
+
+  - Pupper: identical to ../../pupper_v3/xmls/pupper_v3.xml (meshes shared).
+  - Printed mounts (pupper_so101_mount_v3): Part A "saddle" (v4) on the rear
+    deck, Part B "arm base" (replaces the stock SO-101 table base). Their meshes are
+    already in the base_link frame; see build_assets.py.
+  - SO-101: TheRobotStudio/SO-ARM100 Simulation/SO101/so101_new_calib.xml
+    (Apache-2.0), names prefixed so101_, visual-only, stock base mesh removed.
+    Wrist camera: SO-ARM100's one-piece wrist cam mount for a 32 x 32 mm UVC
+    module replaces the fixed-jaw (wrist roll follower) part; the module is a
+    board + lens holder mesh with a MuJoCo camera "so101_wrist_cam".
+    The arm keeps its 6 joints here; pupper_so101_constants.get_spec() locks
+    them into the stowed pose for walking.
+  - Arm power under the front belly: a printed sled push-pinned into 4 of the
+    belly's vent holes (placed from its pin holes, see build_assets.py), open
+    side down, holding a UGREEN 145 W 25000 mAh power bank (a box) on a
+    slide-in floor. Pupper's DeWalt stays.
+-->
+<mujoco model="pupper_v3_so101">
+  <compiler angle="radian" meshdir="assets" autolimits="true"/>
+
+  <default>
+    <!-- Visual geoms live in group 1 and never collide. -->
+    <geom condim="3" contype="0" conaffinity="0" group="1"/>
+    <!-- Collision geoms (named *_collision) are reconfigured by mjlab's
+         CollisionCfg; the values here are sensible fallbacks. -->
+    <default class="collision">
+      <geom group="3" contype="1" conaffinity="1" solimp="0.015 1 0.031"
+        friction="0.8 0.02 0.01"/>
+    </default>
+    <joint armature="0.0016" type="hinge" damping="0.01" frictionloss="0.125"
+      limited="true"/>
+    <default class="so101">
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0"
+        material="so101_print"/>
+      <!-- sts3215 class from SO-ARM100 joints_properties.xml. -->
+      <joint damping="0.60" frictionloss="0.052" armature="0.028"/>
+      <default class="so101_servo">
+        <geom material="so101_servo"/>
+      </default>
+    </default>
+    <default class="mount">
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh name="BodyV4v70_001" file="../../../pupper_v3/xmls/assets/BodyV4v70_001.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_001" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_001.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_002" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_002.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_003" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_003.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_010" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_010.stl" scale="1 -1 1"/>
+    <mesh name="LegAssemblyForFlangedv26_011" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_011.stl" scale="1 1 -1"/>
+    <mesh name="LegAssemblyForFlangedv26_012" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_012.stl" scale="1 1 -1"/>
+    <mesh name="LegAssemblyForFlangedv26_005" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_005.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_006" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_006.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_007" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_007.stl"/>
+    <mesh name="LegAssemblyForFlangedv26_013" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_013.stl" scale="1 -1 1"/>
+    <mesh name="LegAssemblyForFlangedv26_014" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_014.stl" scale="1 1 -1"/>
+    <mesh name="LegAssemblyForFlangedv26_015" file="../../../pupper_v3/xmls/assets/LegAssemblyForFlangedv26_015.stl" scale="1 1 -1"/>
+    <!-- Printed mounts, base_link frame. -->
+    <mesh name="pupper_so101_saddle" file="pupper_so101_saddle.stl"/>
+    <mesh name="pupper_so101_arm_base" file="pupper_so101_arm_base.stl"/>
+    <mesh name="pupper_so101_sled" file="pupper_so101_sled.stl"/>
+    <mesh name="pupper_so101_sled_floor" file="pupper_so101_sled_floor.stl"/>
+    <!-- SO-101 (decimated). -->
+    <mesh name="so101_base_motor_holder_so101_v1" file="so101_base_motor_holder_so101_v1.stl"/>
+    <mesh name="so101_sts3215_03a_v1" file="so101_sts3215_03a_v1.stl"/>
+    <mesh name="so101_sts3215_03a_no_horn_v1" file="so101_sts3215_03a_no_horn_v1.stl"/>
+    <mesh name="so101_waveshare_mounting_plate_so101_v2" file="so101_waveshare_mounting_plate_so101_v2.stl"/>
+    <mesh name="so101_motor_holder_so101_base_v1" file="so101_motor_holder_so101_base_v1.stl"/>
+    <mesh name="so101_rotation_pitch_so101_v1" file="so101_rotation_pitch_so101_v1.stl"/>
+    <mesh name="so101_upper_arm_so101_v1" file="so101_upper_arm_so101_v1.stl"/>
+    <mesh name="so101_under_arm_so101_v1" file="so101_under_arm_so101_v1.stl"/>
+    <mesh name="so101_motor_holder_so101_wrist_v1" file="so101_motor_holder_so101_wrist_v1.stl"/>
+    <mesh name="so101_wrist_roll_pitch_so101_v2" file="so101_wrist_roll_pitch_so101_v2.stl"/>
+    <mesh name="so101_wrist_roll_follower_cam_mount" file="so101_wrist_roll_follower_cam_mount.stl"/>
+    <mesh name="so101_wrist_camera_module" file="so101_wrist_camera_module.stl"/>
+    <mesh name="so101_moving_jaw_so101_v1" file="so101_moving_jaw_so101_v1.stl"/>
+    <material name="saddle_print" rgba="0.9 0.5 0.1 1"/>
+    <material name="arm_base_print" rgba="0.2 0.5 0.9 1"/>
+    <material name="sled_print" rgba="0.1 0.6 0.5 1"/>
+    <material name="power_bank" rgba="0.95 0.75 0.2 1"/>
+    <material name="so101_print" rgba="0.15 0.15 0.15 1"/>
+    <material name="so101_servo" rgba="0.05 0.05 0.05 1"/>
+  </asset>
+
+  <worldbody>
+    <body name="base_link" pos="0 0 0.13" gravcomp="0">
+      <inertial pos="0.025 0 0.015" quat="0 0.677807 0 0.73524" mass="1.506"
+        diaginertia="0.00854071 0.0085 0.00235929"/>
+      <freejoint name="world_to_body"/>
+      <geom quat="0.499998 -0.5 -0.500002 0.5" type="mesh" density="0" mesh="BodyV4v70_001"/>
+      <body name="leg_front_r_1" pos="0.075 -0.0835 0" quat="0.707105 0.707108 0 0" gravcomp="0">
+        <inertial pos="0 0 0" mass="0.18" diaginertia="7.4e-05 5.8e-05 4.8e-05"/>
+        <joint name="leg_front_r_1" pos="0 0 0" axis="0 0 1" range="-1.22 2.51"/>
+        <geom pos="0 0 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+          mesh="LegAssemblyForFlangedv26_001"/>
+        <body name="leg_front_r_2" pos="0 0 0" quat="0.707107 2.24089e-06 -0.707107 4.83018e-06" gravcomp="0">
+          <inertial pos="0 -0.0334 0.05419" quat="0.903877 0.427791 0 0" mass="0.186"
+            diaginertia="0.000113 9.74951e-05 4.65049e-05"/>
+          <joint name="leg_front_r_2" pos="0 0 0" axis="0 0 1" range="-0.42 3.14"/>
+          <geom name="leg_front_r_2_collision" size="0.025" pos="0 -0.0494 0.0685"
+            quat="0.707105 0 0.707108 0" type="sphere" class="collision"/>
+          <geom pos="-0.028 0 0" quat="-2.93388e-06 0.707108 2.26082e-06 0.707106" type="mesh"
+            density="0" mesh="LegAssemblyForFlangedv26_002"/>
+          <body name="leg_front_r_3" pos="0 -0.0494 0.0685" quat="0.707105 0 0.707108 0" gravcomp="0">
+            <inertial pos="0.03866 -0.03585 0.01833" quat="0.270598 0.653281 -0.270598 0.653281"
+              mass="0.05" diaginertia="7.7e-05 7.55e-05 5.5e-06"/>
+            <joint name="leg_front_r_3" pos="0 0 0" axis="0 0 1" range="-2.79 0.71"/>
+            <geom name="leg_front_r_3_collision" size="0.01995" pos="0.06231 -0.06216 0.018"
+              quat="1.32679e-06 0 0 1" type="sphere" class="collision"/>
+            <geom pos="0.0685 0.0494 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+              mesh="LegAssemblyForFlangedv26_003"/>
+            <site name="leg_front_r_3_foot_site" pos="0.06231 -0.06216 0.018"/>
+          </body>
+        </body>
+      </body>
+      <body name="leg_front_l_1" pos="0.075 0.0835 0" quat="0.707105 -0.707108 0 0" gravcomp="0">
+        <inertial pos="0 0 0" mass="0.18" diaginertia="7.4e-05 5.8e-05 4.8e-05"/>
+        <joint name="leg_front_l_1" pos="0 0 0" axis="0 0 1" range="-2.51 1.22"/>
+        <geom pos="0 0 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+          mesh="LegAssemblyForFlangedv26_010"/>
+        <body name="leg_front_l_2" pos="0 0 0" quat="-3.89602e-06 0.707107 -1.29867e-06 -0.707107" gravcomp="0">
+          <inertial pos="0 -0.0334 0.05419" quat="0.903877 0.427791 0 0" mass="0.186"
+            diaginertia="0.000113 9.74951e-05 4.65049e-05"/>
+          <joint name="leg_front_l_2" pos="0 0 0" axis="0 0 1" range="-3.14 0.42"/>
+          <geom name="leg_front_l_2_collision" size="0.025" pos="0 -0.0494 0.0685"
+            quat="0.707105 0 0.707108 0" type="sphere" class="collision"/>
+          <geom pos="0.028 0 0" quat="-2.93388e-06 0.707108 2.26082e-06 0.707106" type="mesh"
+            density="0" mesh="LegAssemblyForFlangedv26_011"/>
+          <body name="leg_front_l_3" pos="0 -0.0494 0.0685" quat="9.38184e-07 -0.707108 9.38187e-07 0.707105" gravcomp="0">
+            <inertial pos="0.03866 0.03585 0.01833" quat="0.653281 0.270598 -0.653281 0.270598"
+              mass="0.05" diaginertia="7.7e-05 7.55e-05 5.5e-06"/>
+            <joint name="leg_front_l_3" pos="0 0 0" axis="0 0 1" range="-0.71 2.79"/>
+            <geom name="leg_front_l_3_collision" size="0.01995" pos="0.06231 0.06216 0.018"
+              quat="1.32679e-06 0 0 1" type="sphere" class="collision"/>
+            <geom pos="0.0685 -0.0494 -0.028" quat="1.76029e-12 1.32679e-06 1 1.32679e-06" type="mesh"
+              density="0" mesh="LegAssemblyForFlangedv26_012"/>
+            <site name="leg_front_l_3_foot_site" pos="0.06231 0.06216 0.018"/>
+          </body>
+        </body>
+      </body>
+      <body name="leg_back_r_1" pos="-0.075 -0.0725 0" quat="0.707105 0.707108 0 0" gravcomp="0">
+        <inertial pos="0 0 0" mass="0.18" diaginertia="7.4e-05 5.8e-05 4.8e-05"/>
+        <joint name="leg_back_r_1" pos="0 0 0" axis="0 0 1" range="-1.22 2.51"/>
+        <geom pos="0 0 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+          mesh="LegAssemblyForFlangedv26_005"/>
+        <body name="leg_back_r_2" pos="0 0 0" quat="0.707107 2.24089e-06 -0.707107 4.83018e-06" gravcomp="0">
+          <inertial pos="0 -0.0334 0.05419" quat="0.903877 0.427791 0 0" mass="0.186"
+            diaginertia="0.000113 9.74951e-05 4.65049e-05"/>
+          <joint name="leg_back_r_2" pos="0 0 0" axis="0 0 1" range="-0.42 3.14"/>
+          <geom name="leg_back_r_2_collision" size="0.025" pos="0 -0.0494 0.0685"
+            quat="0.707105 0 0.707108 0" type="sphere" class="collision"/>
+          <geom pos="-0.028 0 0" quat="-2.93388e-06 0.707108 2.26082e-06 0.707106" type="mesh"
+            density="0" mesh="LegAssemblyForFlangedv26_006"/>
+          <body name="leg_back_r_3" pos="0 -0.0494 0.0685" quat="0.707105 0 0.707108 0" gravcomp="0">
+            <inertial pos="0.03866 -0.03585 0.01833" quat="0.270598 0.653281 -0.270598 0.653281"
+              mass="0.05" diaginertia="7.7e-05 7.55e-05 5.5e-06"/>
+            <joint name="leg_back_r_3" pos="0 0 0" axis="0 0 1" range="-2.79 0.71"/>
+            <geom name="leg_back_r_3_collision" size="0.01995" pos="0.06231 -0.06216 0.018"
+              quat="1.32679e-06 0 0 1" type="sphere" class="collision"/>
+            <geom pos="0.0685 0.0494 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+              mesh="LegAssemblyForFlangedv26_007"/>
+            <site name="leg_back_r_3_foot_site" pos="0.06231 -0.06216 0.018"/>
+          </body>
+        </body>
+      </body>
+      <body name="leg_back_l_1" pos="-0.075 0.0725 0" quat="0.707105 -0.707108 0 0" gravcomp="0">
+        <inertial pos="0 0 0" mass="0.18" diaginertia="7.4e-05 5.8e-05 4.8e-05"/>
+        <joint name="leg_back_l_1" pos="0 0 0" axis="0 0 1" range="-2.51 1.22"/>
+        <geom pos="0 0 -0.028" quat="1.32679e-06 0 0 1" type="mesh" density="0"
+          mesh="LegAssemblyForFlangedv26_013"/>
+        <body name="leg_back_l_2" pos="0 0 0" quat="-3.89602e-06 0.707107 -1.29867e-06 -0.707107" gravcomp="0">
+          <inertial pos="0 -0.0334 0.05419" quat="0.903877 0.427791 0 0" mass="0.186"
+            diaginertia="0.000113 9.74951e-05 4.65049e-05"/>
+          <joint name="leg_back_l_2" pos="0 0 0" axis="0 0 1" range="-3.14 0.42"/>
+          <geom name="leg_back_l_2_collision" size="0.025" pos="0 -0.0494 0.0685"
+            quat="0.707105 0 0.707108 0" type="sphere" class="collision"/>
+          <geom pos="0.028 0 0" quat="-2.93388e-06 0.707108 2.26082e-06 0.707106" type="mesh"
+            density="0" mesh="LegAssemblyForFlangedv26_014"/>
+          <body name="leg_back_l_3" pos="0 -0.0494 0.0685" quat="9.38184e-07 -0.707108 9.38187e-07 0.707105" gravcomp="0">
+            <inertial pos="0.03866 0.03585 0.01833" quat="0.653281 0.270598 -0.653281 0.270598"
+              mass="0.05" diaginertia="7.7e-05 7.55e-05 5.5e-06"/>
+            <joint name="leg_back_l_3" pos="0 0 0" axis="0 0 1" range="-0.71 2.79"/>
+            <geom name="leg_back_l_3_collision" size="0.01995" pos="0.06231 0.06216 0.018"
+              quat="1.32679e-06 0 0 1" type="sphere" class="collision"/>
+            <geom pos="0.0685 -0.0494 -0.028" quat="1.76029e-12 1.32679e-06 1 1.32679e-06" type="mesh"
+              density="0" mesh="LegAssemblyForFlangedv26_015"/>
+            <site name="leg_back_l_3_foot_site" pos="0.06231 0.06216 0.018"/>
+          </body>
+        </body>
+      </body>
+      <!-- Part A, saddle: bolts to the back-clamp and strap holes. -->
+      <body name="so101_saddle">
+        <inertial pos="-0.05806 0.00044 0.05228" mass="0.043"
+          fullinertia="2.258e-05 1.42e-05 2.905e-05 3.021e-08 1.95e-06 -3.997e-08"/>
+        <geom class="mount" mesh="pupper_so101_saddle" material="saddle_print"/>
+      </body>
+      <!-- Part B, arm base: bolts to the saddle with 4x M3. -->
+      <body name="so101_arm_mount">
+        <inertial pos="-0.06746 0.00056 0.08924" mass="0.044"
+          fullinertia="3.025e-05 2.619e-05 1.86e-05 -3.288e-09 1.592e-06 -3.997e-08"/>
+        <geom class="mount" mesh="pupper_so101_arm_base" material="arm_base_print"/>
+      </body>
+      <!-- Power-bank sled, 158 x 87 x 37 mm: its base is push-pinned flat to
+           the belly (z = -31.6 mm) through the vent holes at STEP X = -24.56 /
+           25.44, Z = -115.08 / -45.08; the closed end overhangs the nose by
+           ~42 mm and the open end stops just in front of the DeWalt opening. -->
+      <body name="battery_sled">
+        <inertial pos="0.11064 -0.00037 -0.04219" mass="0.083"
+          fullinertia="9.886e-05 0.0002063 0.0002815 0 5.063e-06 0"/>
+        <geom class="mount" mesh="pupper_so101_sled" material="sled_print"/>
+        <!-- Lowest part of the robot's body (~73 mm off the ground standing);
+             reaches back over the bank's 4.5 mm overhang. -->
+        <geom name="battery_sled_collision" class="collision" type="box"
+          pos="0.10110 -0.00040 -0.04995" size="0.08120 0.04340 0.01835" mass="0"/>
+      </body>
+      <!-- Floor plate: slides in from the open end onto the sled's lips. -->
+      <body name="battery_sled_floor">
+        <inertial pos="0.10666 -0.00073 -0.06365" mass="0.019"
+          fullinertia="1.072e-05 3.575e-05 4.645e-05 -3.544e-07 0 0"/>
+        <geom class="mount" mesh="pupper_so101_sled_floor" material="sled_print"/>
+      </body>
+      <!-- UGREEN 145 W 25000 mAh (90597A), 160 x 80 x 26 mm, 505 g spec, lying
+           on the floor against the closed end. Its mass is set by
+           pupper_so101_constants.POWER_BANK_MASS. -->
+      <body name="power_bank">
+        <geom name="power_bank" class="mount" type="box" pos="0.09988 -0.00037 -0.04939"
+          size="0.08 0.04 0.013" mass="0.505" material="power_bank"/>
+      </body>
+      <!-- PD trigger + 12 V buck + wiring (~30 g). Where they ride is not in the
+           sled design yet: lumped at the bank's center. -->
+      <body name="power_electronics">
+        <inertial pos="0.09988 -0.00037 -0.04939" mass="0.03" diaginertia="4e-6 4e-6 4e-6"/>
+      </body>
+      <!-- SO-101 "base" link frame, registered against Part B's servo tower (a
+           boolean copy of the stock base; 0.4 mm median fit). Arm faces the
+           nose; pan axis at base_link x = -25.9 mm. -->
+      <body name="so101_base" pos="-0.0651 0.0009 0.0564" childclass="so101">
+        <!-- Stock link is 0.147 kg including the ~72 g table base that Part B
+             replaces (same 0.59 g/cm3 effective density); the rest is the pan
+             servo, base motor holder and driver-board plate. -->
+        <inertial pos="0.0137179 -5.19711e-05 0.0334843" mass="0.075"
+          fullinertia="5.85e-05 6.945e-05 6.651e-05 -2.346e-07 2.537e-06 4.975e-08"/>
+        <geom pos="-0.00636471 -9.94414e-05 -0.0024" quat="0.5 0.5 0.5 0.5"
+          mesh="so101_base_motor_holder_so101_v1"/>
+        <geom class="so101_servo" pos="0.0263353 0 0.0437" mesh="so101_sts3215_03a_v1"/>
+        <geom pos="-0.0309827 -0.000199441 0.0474" quat="0.5 0.5 0.5 0.5"
+          mesh="so101_waveshare_mounting_plate_so101_v2"/>
+        <site name="so101_baseframe" group="3"/>
+        <body name="so101_shoulder" pos="0.0388353 0 0.0624" quat="0 0 -1 0">
+          <joint name="so101_shoulder_pan" axis="0 0 1" range="-1.91986 1.91986"/>
+          <inertial pos="-0.0307604 -1.66727e-05 -0.0252713" mass="0.100006"
+            fullinertia="8.3759e-05 8.10403e-05 2.39783e-05 7.55525e-08 -1.16342e-06 1.54663e-07"/>
+          <geom class="so101_servo" pos="-0.0303992 0.000422241 -0.0417" quat="0.5 0.5 0.5 -0.5"
+            mesh="so101_sts3215_03a_v1"/>
+          <geom pos="-0.0675992 -0.000177759 0.0158499" quat="0.5 0.5 -0.5 0.5"
+            mesh="so101_motor_holder_so101_base_v1"/>
+          <geom pos="0.0122008 2.22413e-05 0.0464" quat="0.707107 -0.707107 0 0"
+            mesh="so101_rotation_pitch_so101_v1"/>
+          <body name="so101_upper_arm" pos="-0.0303992 -0.0182778 -0.0542" quat="0.5 -0.5 -0.5 -0.5">
+            <joint name="so101_shoulder_lift" axis="0 0 1" range="-1.74533 1.74533"/>
+            <inertial pos="-0.0898471 -0.00838224 0.0184089" mass="0.103"
+              fullinertia="4.08002e-05 0.000147318 0.000142487 -1.97819e-05 -4.03016e-08 8.97326e-09"/>
+            <geom class="so101_servo" pos="-0.11257 -0.0155 0.0187" quat="0 -0.707107 0.707107 0"
+              mesh="so101_sts3215_03a_v1"/>
+            <geom pos="-0.065085 0.012 0.0182" quat="0 1 0 0" mesh="so101_upper_arm_so101_v1"/>
+            <body name="so101_lower_arm" pos="-0.11257 -0.028 0" quat="0.707107 0 0 0.707107">
+              <joint name="so101_elbow_flex" axis="0 0 1" range="-1.69 1.69"/>
+              <inertial pos="-0.0980701 0.00324376 0.0182831" mass="0.104"
+                fullinertia="2.87438e-05 0.000159844 0.00014529 7.41152e-06 1.26409e-06 -4.90188e-08"/>
+              <geom pos="-0.0648499 -0.032 0.0182" quat="0 1 0 0" mesh="so101_under_arm_so101_v1"/>
+              <geom pos="-0.0648499 -0.032 0.018" quat="0 -1 0 0"
+                mesh="so101_motor_holder_so101_wrist_v1"/>
+              <geom class="so101_servo" pos="-0.1224 0.0052 0.0187" quat="0 0 1 0"
+                mesh="so101_sts3215_03a_v1"/>
+              <body name="so101_wrist" pos="-0.1349 0.0052 0" quat="0.707107 0 0 -0.707107">
+                <joint name="so101_wrist_flex" axis="0 0 1" range="-1.65806 1.65806"/>
+                <inertial pos="-0.000103312 -0.0386143 0.0281156" mass="0.079"
+                  fullinertia="3.68263e-05 2.5391e-05 2.1e-05 1.7893e-08 -5.28128e-08 3.6412e-06"/>
+                <geom class="so101_servo" pos="0 -0.0424 0.0306" quat="0.5 0.5 0.5 -0.5"
+                  mesh="so101_sts3215_03a_no_horn_v1"/>
+                <geom pos="0 -0.028 0.0181" quat="0.5 -0.5 -0.5 -0.5"
+                  mesh="so101_wrist_roll_pitch_so101_v2"/>
+                <body name="so101_gripper" pos="0 -0.0611 0.0181"
+                  quat="0.0172091 -0.0172091 0.706897 0.706897">
+                  <joint name="so101_wrist_roll" axis="0 0 1" range="-2.74385 2.84121"/>
+                  <inertial pos="0.000213627 0.000245138 -0.025187" mass="0.087"
+                    fullinertia="2.75087e-05 4.33657e-05 3.45059e-05 -3.35241e-07 -5.7352e-06 -5.17847e-08"/>
+                  <geom class="so101_servo" pos="0.0077 0.0001 -0.0234" quat="0.707107 -0.707107 0 0"
+                    mesh="so101_sts3215_03a_v1"/>
+                  <geom pos="0 -0.000218214 0.000949706" quat="0 1 0 0"
+                    mesh="so101_wrist_roll_follower_cam_mount"/>
+                  <!-- Wrist camera, in the mount's frame: 32 x 32 mm UVC module on the
+                       plate, looking down the fingers. Mass: module ~8 g, the mount's
+                       extra plastic ~10 g, cable ~5 g. FOV is a guess; set it to your
+                       module's. -->
+                  <body name="so101_wrist_camera" pos="0 -0.000218214 0.000949706" quat="0 1 0 0">
+                    <inertial pos="0.00240 0.06709 -0.00032" mass="0.023" diaginertia="1.5e-6 1.5e-6 1.5e-6"/>
+                    <geom class="so101_servo" mesh="so101_wrist_camera_module"/>
+                    <camera name="so101_wrist_cam" pos="0.00240 0.06121 0.01456"
+                      xyaxes="1 0 0 0.0000 -0.9298 -0.3679" fovy="70"/>
+                  </body>
+                  <site name="so101_gripperframe" group="3" pos="-0.0079 -0.000218121 -0.0981274"
+                    quat="0.707107 0 0.707107 0"/>
+                  <body name="so101_moving_jaw" pos="0.0202 0.0188 -0.0234" quat="0.707107 0.707107 0 0">
+                    <joint name="so101_gripper" axis="0 0 1" range="-0.174533 1.74533"/>
+                    <inertial pos="-0.00157495 -0.0300244 0.0192755" mass="0.012"
+                      fullinertia="6.61427e-06 1.89032e-06 5.28738e-06 -3.19807e-07 -5.90717e-09 -1.09945e-07"/>
+                    <geom pos="0 0 0.0189" mesh="so101_moving_jaw_so101_v1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <site name="body_imu_site" pos="0.09 0 0.032"/>
+    </body>
+  </worldbody>
+</mujoco>
