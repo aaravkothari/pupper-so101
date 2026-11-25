@@ -61,6 +61,7 @@ task from scratch (using the cartpole task as the example).
 | `Mjlab-StableGait-Flat-Pupper-v3` / `-Bumpy-` | Velocity tracking that shapes a triangular trot for fore/aft and a stepping-in-place cycle for turning and side-stepping; the Bumpy variant adds rough ground. |
 | `Mjlab-MixedGaits-Flat-Pupper-v3` / `-Bumpy-` | Per-command reference switching with a separate fast branch above 0.5 m/s. What plays in the fast branch is up to you — see the optional reference lab. |
 | `Mjlab-Mystery-Flat-Pupper-v3` / `-Bumpy-` | ??? |
+| `Mjlab-VelocityFS-Flat-Pupper-SO101-v3` | VelocityFS on Pupper carrying an SO-101 arm (`asset_zoo/robots/pupper_v3_so101/`: arm resting unpowered on a printed back mount, power bank in a sled under the belly). Same 12-joint policy and deploy path; payload ground contact terminates, bank mass randomized. |
 | `Mjlab-SpiderWalk-Flat-Pupper-v3` | Walking in the spider stance (torso 1 cm up, legs splayed): velocity tracking plus the `spider` reference gait, a trot in place. The walking half of lab 6's spider trick. |
 | `Mjlab-Tracking-Flat-Pupper-v3` | Tricks: tracks one reference motion (root pose + joints, BeyondMimic-style) with no velocity command. Design motions and replay them in sim first; see `src/mjlab/tasks/tracking/config/pupper/README.md`. |
 
